@@ -228,6 +228,62 @@ def test_dA(learning_rate=0.1, training_epochs=15,
     )
 
     cost, updates = da.get_cost_updates(
+        corruption_level=0.3,
+        learning_rate=learning_rate
+    )
+
+    train_da = theano.function(
+        [index],
+        cost,
+        updates=updates,
+        givens={
+            x: train_set_x[index * batch_size: (index + 1) * batch_size]
+        }
+    )
+
+    start_time = timeit.default_timer()
+
+    """ Training """
+
+    # go through training epochs
+    for epoch in range(training_epochs):
+        # go through trainng set
+        c = []
+        for batch_index in range(n_train_batches):
+            c.append(train_da(batch_index))
+
+        print('Training epoch %d, cost ' % epoch, numpy.mean(c, dtype='float64'))
+
+    end_time = timeit.default_timer()
+
+    training_time = (end_time - start_time)
+
+    print(('The 30% corruption code for file ' +
+           os.path.split(__file__)[1] +
+           ' ran for %.2fm' % (training_time / 60.)), file=sys.stderr)
+    
+
+    image = Image.fromarray(tile_raster_images(
+        X=da.W.get_value(borrow=True).T,
+        img_shape=(28, 28), tile_shape=(10, 10),
+        tile_spacing=(1, 1)))
+    image.save('filters_corruption_30.png')
+    
+
+    """ BUILDING WITH CORRUPTION 100% """
+
+    rng = numpy.random.RandomState(123)
+    theano_rng = RandomStreams(rng.randint(2 ** 30))
+
+    da = dA(
+        numpy_rng=rng,
+        theano_rng=theano_rng,
+        input=x,
+        n_visible=28 * 28,
+        n_hidden=500
+    )
+
+    cost, updates = da.get_cost_updates(
         corruption_level=1,
         learning_rate=learning_rate
     )
@@ -267,8 +323,7 @@ def test_dA(learning_rate=0.1, training_epochs=15,
         X=da.W.get_value(borrow=True).T,
         img_shape=(28, 28), tile_shape=(10, 10),
         tile_spacing=(1, 1)))
-    image.save('filters_corruption_30.png')
-    
+    image.save('filters_corruption_100.png')
 
     os.chdir('../')
 
