@@ -6,15 +6,15 @@
  
  The basic ideology behing autoencoders is to train the autoencoder to reconstruct the input from a corrupted version of it in order to force the hidden layer to discover more robust features and prevent it from simply learning the identity.
  
- An autoencoder takes an input \mathbf{x} \in [0,1]^d and first maps it (with an encoder) to a hidden representation \mathbf{y} \in [0,1]^{d'} through a deterministic mapping, e.g.:
+ An autoencoder takes an input \mathbf{x} \in [0,1]^d and first maps it (with an encoder) to a hidden representation \(y\) in \([0,1]^{d'}\) through a deterministic mapping, e.g.:
 
-\mathbf{y} = s(\mathbf{W}\mathbf{x} + \mathbf{b})
+\(y=s*(W*x + b)\)
 
 Where s is a non-linearity such as the sigmoid. The latent representation \mathbf{y}, or code is then mapped back (with a decoder) into a reconstruction \mathbf{z} of the same shape as \mathbf{x}. The mapping happens through a similar transformation, e.g.:
 
-\mathbf{z} = s(\mathbf{W'}\mathbf{y} + \mathbf{b'})
+\(z=s*(W'*y + b')\)
 
-(Here, the prime symbol does not indicate matrix transposition.) \mathbf{z} should be seen as a prediction of \mathbf{x}, given the code \mathbf{y}. 
+(Here, the prime symbol does not indicate matrix transposition.) z should be seen as a prediction of x, given the code y. 
 
 The reconstruction error can be measured in many ways, depending on the appropriate distributional assumptions on the input given the code. The traditional squared error L(\mathbf{x} \mathbf{z}) = || \mathbf{x} -
 \mathbf{z} ||^2, can be used. If the input is interpreted as either bit vectors or vectors of bit probabilities, cross-entropy of the reconstruction can be used:
