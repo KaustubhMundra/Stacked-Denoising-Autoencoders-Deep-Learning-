@@ -194,7 +194,7 @@ def test_dA(learning_rate=0.1, training_epochs=15,
     """ TRAINING """
     # go through training epochs
     for epoch in range(training_epochs):
-        # go through trainng set
+        # go through training set
         c = []
         for batch_index in range(n_train_batches):
             c.append(train_da(batch_index))
